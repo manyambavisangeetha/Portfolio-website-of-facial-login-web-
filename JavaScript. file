@@ -1,0 +1,27 @@
+const video = document.getElementById('video');
+const canvas = document.getElementById('canvas');
+const context = canvas.getContext('2d');
+const captureButton = document.getElementById('capture');
+const statusText = document.getElementById('status');
+
+// Check if the browser supports the mediaDevices API
+if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+    navigator.mediaDevices.getUserMedia({ video: true }).then(stream => {
+        video.srcObject = stream;
+        video.play();
+    }).catch(error => {
+        console.error('Error accessing webcam: ', error);
+        statusText.textContent = 'Unable to access webcam.';
+    });
+} else {
+    statusText.textContent = 'Webcam not supported.';
+}
+
+captureButton.addEventListener('click', () => {
+    context.drawImage(video, 0, 0, canvas.width, canvas.height);
+    const imageData = canvas.toDataURL('image/png');
+    
+    // Here you would send `imageData` to your facial recognition API
+    // For demonstration, we're just updating the status
+    statusText.textContent = 'Image captured. Send this image to your server for facial recognition.';
+});
